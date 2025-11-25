@@ -9,20 +9,18 @@ from sklearn.metrics import accuracy_score
 # ---------------------------
 # 1. Load dataset
 # ---------------------------
-# Replace "accident_data.csv" with your file name
 data = pd.read_csv("accident_data.csv")
 
 # ---------------------------
 # 2. Clean data
 # ---------------------------
-data = data.dropna()   # remove missing rows
+data = data.dropna()
 
 # ---------------------------
 # 3. Select features & label
 # ---------------------------
-# Example columns (change names according to your CSV)
 X = data[["latitude", "longitude", "traffic_volume", "weather"]]
-y = data["accident_hotspot"]  # 1 = hotspot, 0 = not hotspot
+y = data["accident_hotspot"]
 
 # ---------------------------
 # 4. Train-Test Split
@@ -43,4 +41,5 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 
-print("Model Accuracy:", accuracy)
+print("Model Accuracy:", accuracy)
+
