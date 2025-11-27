@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Accident Hotspot Prediction</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+  <header>
+    <h1>Traffic Accident Hotspot Prediction</h1>
+  </header>
+
+  <section id="intro">
+    <p>Discover accident-prone areas using historical traffic data and machine learning predictions.</p>
+  </section>
+
+  <section id="map-section">
+    <h2>Hotspot Map</h2>
+    <div id="map" style="height:500px;"></div>
+  </section>
+
+  <section id="input-section">
+    <h2>Check Hotspot</h2>
+    <input type="text" id="area" placeholder="Enter city/area">
+    <button onclick="checkHotspot()">Predict</button>
+    <p id="result"></p>
+  </section>
+
+  <footer>
+    <p>Created by Khushi Chaurasia | <a href="https://github.com/yourusername">GitHub</a></p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
