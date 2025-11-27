@@ -1,18 +1,18 @@
 // Initialize map
 var map = L.map('map').setView([22.9734, 78.6569], 5);
 
-// Add tiles
+// Add OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Layer groups
+// Layers for districts and cities
 var districtLayer, cityLayer = L.layerGroup().addTo(map);
 
 // Audio for alert
 var alertSound = new Audio('https://www.soundjay.com/buttons/sounds/beep-07.mp3');
 
-// Accident data with previous year
+// Accident data (current and previous)
 var accidentData = {
     "Bhopal": {current:1200, previous:1000, state:"Madhya Pradesh"},
     "Indore": {current:1500, previous:1400, state:"Madhya Pradesh"},
@@ -21,10 +21,9 @@ var accidentData = {
     "Pune": {current:1500, previous:1300, state:"Maharashtra"},
     "Bangalore": {current:1700, previous:1600, state:"Karnataka"},
     "Chennai": {current:1600, previous:1500, state:"Tamil Nadu"}
-    // Add more districts/cities as needed
 };
 
-// City-level data
+// City data
 var cityData = [
     {name:"Bhopal City", lat:23.2599, lon:77.4126, district:"Bhopal"},
     {name:"Indore City", lat:22.7196, lon:75.8577, district:"Indore"},
@@ -35,7 +34,7 @@ var cityData = [
     {name:"Chennai City", lat:13.0827, lon:80.2707, district:"Chennai"}
 ];
 
-// Load GeoJSON districts
+// Load GeoJSON
 fetch('india_districts.geojson')
 .then(res => res.json())
 .then(geojson => {
@@ -56,7 +55,7 @@ fetch('india_districts.geojson')
     }).addTo(map);
 });
 
-// Show district + cities + alert for max % change
+// Show district + cities + max % change alert
 function showDistrictData(district){
     cityLayer.clearLayers();
 
@@ -83,7 +82,7 @@ function showDistrictData(district){
         }
     });
 
-    // Alert with sound
+    // Alert with beep
     alertSound.play();
     alert("District with MAX accident % change:\n" + maxChange.district +
           "\nAccidents: " + maxChange.data.current +
@@ -91,7 +90,7 @@ function showDistrictData(district){
           "\n% Change: " + maxChange.percent + "%");
 }
 
-// State selection → highlight districts
+// State selection
 function selectState(stateName){
     districtLayer.eachLayer(function(layer){
         if(layer.feature.properties.STATE === stateName){
@@ -104,27 +103,34 @@ function selectState(stateName){
 
 // Search city/district
 function filterCity(){
-    let area = document.getElementById("citySearch").value.trim();
+    let area = document.getElementById("citySearch").value.trim().toLowerCase();
     var found = false;
 
-    // Check in city data
+    cityLayer.clearLayers();
+
+    // Search cities
     cityData.forEach(city => {
-        if(city.name.toLowerCase() === area.toLowerCase()){
+        if(city.name.toLowerCase().includes(area) || city.district.toLowerCase().includes(area)){
+            L.marker([city.lat, city.lon]).addTo(cityLayer)
+                .bindPopup(city.name + " (" + city.district + ")<br>" +
+                           "Accidents: " + (accidentData[city.district]?.current || 0) +
+                           "<br>Previous: " + (accidentData[city.district]?.previous || 0))
+                .openPopup();
             map.setView([city.lat, city.lon], 12);
             found = true;
         }
     });
 
-    // Check in district data
+    // Search districts
     districtLayer.eachLayer(function(layer){
-        var district = layer.feature.properties.DISTRICT || layer.feature.properties.NAME;
-        if(district.toLowerCase() === area.toLowerCase()){
-            showDistrictData(district);
+        var district = (layer.feature.properties.DISTRICT || layer.feature.properties.NAME).toLowerCase();
+        if(district.includes(area)){
+            showDistrictData(layer.feature.properties.DISTRICT || layer.feature.properties.NAME);
             map.fitBounds(layer.getBounds());
             found = true;
         }
     });
 
     var result = document.getElementById("result");
-    result.innerText = found ? "Showing " + area : "City/District not found in data.";
+    result.innerText = found ? "Showing results for '" + area + "'" : "City/District not found in data.";
 }
