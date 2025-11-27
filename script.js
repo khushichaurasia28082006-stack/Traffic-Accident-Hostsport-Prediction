@@ -6,16 +6,17 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Layers for districts and cities
+// Layers
 var districtLayer, cityLayer = L.layerGroup().addTo(map);
 
 // Audio for alert
 var alertSound = new Audio('https://www.soundjay.com/buttons/sounds/beep-07.mp3');
 
-// Accident data (current and previous)
+// Accident data
 var accidentData = {
     "Bhopal": {current:1200, previous:1000, state:"Madhya Pradesh"},
     "Indore": {current:1500, previous:1400, state:"Madhya Pradesh"},
+    "Chhatarpur": {current:800, previous:600, state:"Madhya Pradesh"},
     "Delhi": {current:2000, previous:1800, state:"Delhi"},
     "Mumbai": {current:2200, previous:2100, state:"Maharashtra"},
     "Pune": {current:1500, previous:1300, state:"Maharashtra"},
@@ -27,6 +28,7 @@ var accidentData = {
 var cityData = [
     {name:"Bhopal City", lat:23.2599, lon:77.4126, district:"Bhopal"},
     {name:"Indore City", lat:22.7196, lon:75.8577, district:"Indore"},
+    {name:"Chhatarpur City", lat:24.5897, lon:79.5822, district:"Chhatarpur"},
     {name:"Delhi City", lat:28.7041, lon:77.1025, district:"Delhi"},
     {name:"Mumbai City", lat:19.0760, lon:72.8777, district:"Mumbai"},
     {name:"Pune City", lat:18.5204, lon:73.8567, district:"Pune"},
@@ -34,7 +36,7 @@ var cityData = [
     {name:"Chennai City", lat:13.0827, lon:80.2707, district:"Chennai"}
 ];
 
-// Load GeoJSON
+// Load GeoJSON districts
 fetch('india_districts.geojson')
 .then(res => res.json())
 .then(geojson => {
@@ -58,7 +60,6 @@ fetch('india_districts.geojson')
 // Show district + cities + max % change alert
 function showDistrictData(district){
     cityLayer.clearLayers();
-
     var maxChange = {district:"", percent:-Infinity, data:null};
 
     districtLayer.eachLayer(function(layer){
@@ -105,7 +106,6 @@ function selectState(stateName){
 function filterCity(){
     let area = document.getElementById("citySearch").value.trim().toLowerCase();
     var found = false;
-
     cityLayer.clearLayers();
 
     // Search cities
@@ -118,6 +118,9 @@ function filterCity(){
                 .openPopup();
             map.setView([city.lat, city.lon], 12);
             found = true;
+
+            // Trigger alert for this city
+            triggerAlert(city.district);
         }
     });
 
@@ -133,4 +136,18 @@ function filterCity(){
 
     var result = document.getElementById("result");
     result.innerText = found ? "Showing results for '" + area + "'" : "City/District not found in data.";
+}
+
+// Trigger alert function
+function triggerAlert(area){
+    area = area.toLowerCase();
+    if(accidentData[area]){
+        let data = accidentData[area];
+        let percentChange = data.previous > 0 ? ((data.current - data.previous)/data.previous*100).toFixed(2) : 0;
+        alertSound.play();
+        alert("⚠ HIGH ACCIDENT RISK AREA: " + area.charAt(0).toUpperCase() + area.slice(1) +
+              "\nAccidents: " + data.current +
+              "\nPrevious: " + data.previous +
+              "\n% Change: " + percentChange + "%");
+    }
 }
