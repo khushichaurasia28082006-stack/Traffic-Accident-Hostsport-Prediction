@@ -18,13 +18,22 @@
 
   <section id="map-section">
     <h2>Hotspot Map</h2>
-    <div id="map" style="height:500px;"></div>
+    <div id="map"></div>
   </section>
 
-  <section id="input-section">
-    <h2>Check Hotspot</h2>
-    <input type="text" id="citySearch" placeholder="Enter city name">
+  <section id="controls">
+    <h2>Controls</h2>
+    <input type="text" id="citySearch" placeholder="Enter city or district name">
     <button onclick="filterCity()">Search</button>
+    <select id="stateSelect" onchange="selectState(this.value)">
+      <option value="">--Select State--</option>
+      <option value="Madhya Pradesh">Madhya Pradesh</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <!-- Add more states here -->
+    </select>
     <p id="result"></p>
   </section>
 
@@ -32,9 +41,7 @@
     <p>Created by Khushi Chaurasia | <a href="https://github.com/khushichaurasia28082006-stack">GitHub</a></p>
   </footer>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- Your custom JS -->
   <script src="script.js"></script>
 </body>
 </html>
