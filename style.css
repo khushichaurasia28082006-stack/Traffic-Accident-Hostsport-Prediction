@@ -1,25 +1,65 @@
+/* Body and font */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #f5f5f5;
 }
-h1, h2 {
+
+/* Header */
+header {
+  background-color: #004080;
+  color: white;
+  padding: 15px 0;
   text-align: center;
 }
+
+/* Main headings */
+h1, h2 {
+  text-align: center;
+  margin: 10px 0;
+}
+
+/* Intro section */
+#intro {
+  text-align: center;
+  margin: 10px;
+  font-size: 16px;
+}
+
+/* Map section */
+#map-section {
+  margin: 20px;
+}
+
 #map {
   height: 500px;
   width: 100%;
-  margin: 10px 0;
-}
-#controls {
-  text-align: center;
-  margin: 10px;
-}
-#citySearch {
-  padding: 5px;
-  width: 200px;
-}
-#stateSelect {
-  padding: 5px;
+  border: 2px solid #004080;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+/* Controls section */
+#controls {
+  text-align: center;
+  margin: 20px;
+}
+
+#controls input[type="text"] {
+  padding: 8px;
+  width: 220px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+#controls button {
+  padding: 8px 15px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #004080;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
